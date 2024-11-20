@@ -30,6 +30,8 @@ const ProductAdd = () => {
     style: "",
     images: [null, null, null, null],
   });
+
+  const[isLoading,setIsLoading] = useState(false);
   const [cropping, setCropping] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -109,6 +111,8 @@ const ProductAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setIsLoading(true);
     
     if (!product.images.some(img => img !== null)) {
       toast.error("Please add at least one image");
@@ -204,13 +208,18 @@ const ProductAdd = () => {
           style: "",
           images: [null, null, null, null],
         });
+        setIsLoading(false);
       } catch (err) {
         console.error('Error saving locally:', err);
         toast.warning("Product saved to backend but local save failed");
+        setIsLoading(false);
+
       }
     } catch (error) {
       console.error("Error adding product:", error);
       toast.error("Failed to add product");
+      setIsLoading(false);
+
     }
   };
 
@@ -760,7 +769,7 @@ const ProductAdd = () => {
             type="submit"
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
           >
-            <span>Add Product</span>
+            <span>{isLoading ? 'adding product ...' : 'Add Product' }</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
